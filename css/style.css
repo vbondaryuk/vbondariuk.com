@@ -1,0 +1,12 @@
+body{
+    padding: 1em;
+}
+.cv-image{
+    text-align: right;
+}
+
+@media (max-width: 768px) {    
+    .cv-image {
+        text-align: center!important;
+    }
+}
