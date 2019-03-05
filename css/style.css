@@ -1,8 +1,13 @@
 body{
     padding: 1em;
 }
+
 .cv-image{
     text-align: right;
+}
+
+.cv-job-description{
+    padding-left: 1em;
 }
 
 @media (max-width: 768px) {    
