@@ -15,3 +15,31 @@ body{
         text-align: center!important;
     }
 }
+
+.folder-structure ul, 
+.folder-structure li{
+    list-style: none;
+    
+  }
+
+/* .folder-structure ul:before,  */
+.folder-structure li:before{
+    content: '';   
+    display: inline-block;   
+    height: 40px;   
+    width: 40px;    
+    background-size: 40px;
+    background-repeat: no-repeat;   
+    margin-right: 10px;
+    background-position: center center;
+    vertical-align: middle;
+    background-image: url('../img/folder.png');  
+}
+
+code{
+    color: #4070a0;
+    font-family: monospace;
+    font-size: 17px;
+    background-color: rgb(240, 240, 240);
+    padding: 2px 7px;
+}
