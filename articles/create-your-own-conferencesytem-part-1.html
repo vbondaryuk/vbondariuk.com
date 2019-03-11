@@ -46,7 +46,7 @@
                 for authentication between them JWT.
             </p>
             <p>
-                Since article will have a lot of piece of codes I decided to split it to following parts
+                Since article will have a lot piece of codes I decided to split it to following parts
             </p>
             <ul>
                 <li><a href="#create-simple-chat">Creating simple chat via SignalR</a>
@@ -114,22 +114,22 @@
                     <li><code>Audience</code> - token receipt</li>
                     <li>Last two fields it is an expiration time</li>
                 </ul>
-                <p>For simplifying to work with this setting we can add <code>JWTSettings</code> class.</p>
+                <p>For simplifying to work with this setting lets add <code>JWTSettings</code> class.</p>
                 <script src="https://gist.github.com/vbondaryuk/94be6d5c753ecfd3409ccbb6875d3910.js"></script>
                 <p>Lets take a look <code>Startup</code> class and <code>ConfigureServices</code> method</p>
                 <script src="https://gist.github.com/vbondaryuk/e0384e30c5bd6b4f57c39f62d4e6b975.js"></script>
                 <p>Here you can see how we extract <code>JWT</code> configuration section and deserialize it to <code>JwtSettings</code> class.
-                    Then we add <code>Authentication</code> service and <code>JwtBearer</code> service. In <code>JwtBearer</code> we configure <code>TokenValidationParameters</code>
-                    accordingly settings from configuration and add <code>AuthenticationFailed</code> 'interceptor' where we validate is exception <code>SecurityTokenExpiredException</code>
-                    and if yes add Token-Expired header. Token-Expired header allow us to add refresh token support.
+                    Then we add <code>Authentication</code> and <code>JwtBearer</code> services. In <code>JwtBearer</code> we configure <code>TokenValidationParameters</code>
+                    accordingly configuration from <code>appsettings.json</code> add <code>AuthenticationFailed</code> 'interceptor' where we validate is exception <code>SecurityTokenExpiredException</code>
+                    then add Token-Expired header. Token-Expired header allow us to add possibilities to token refresh support.
                     <br/>
-                    Sice we will use external client and its application will use other IP address we have to configure <code>CROS</code> policy.
-                    From <a href="https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.2">msdn</a>:
+                    Since we will use external clients and clients will have other IP addresses we should configure <code>CROS</code> policy.
+                    From <a href="https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.2">MSDN</a>:
                     Using CORS, a server can explicitly allow some cross-origin requests while rejecting others.
                 </p>
                 <p>For turn on our modification we should add <code>Authentication</code> and <code>CORS</code> middleware</p>
                 <script src="https://gist.github.com/vbondaryuk/07665294ba449505266389f9282c4482.js"></script>
-                <p>Excellent, we configured our application for supporting JWT authentication, so lets dive more deeply and add create full infrastructure for Authentication.</p>
+                <p>Excellent, we have configured our application for supporting JWT authentication, so lets dive more deeply and implement infrastructure for Authentication.</p>
                 <h6>Add secure Api endpoint</h6>
                 <p>I won't to use default <code>UserManager</code> for implementing authentication managing it is not interesting, more exciting to create it from scratch,
                     probably it won't have all possibilities, but for our system, its more than enough.</p>
@@ -146,13 +146,41 @@
                 <script src="https://gist.github.com/vbondaryuk/37751b5fc0e95f299a02982a46b484e1.js"></script>
                 <p>Code explanation</p>
                 <ul>
-                    <li><code>JwtToken</code> - represent class which will transferred to client</li>
-                    <li><code>JwtRefreshToken</code> - keep some information for validating refresh token, this class will be kept inside DataBase/InMemoryDataBase, for client should be send only refresh token value</li>
-                    <li><code>TokenService</code> - are further explained bellow</li>
+                    <li><code>JwtToken</code> - represents simple class for transferring to client</li>
+                    <li><code>JwtRefreshToken</code> - keeps some information for validating refresh token. This class will be kept inside DataBase/InMemoryDataBase,
+                        for client should be send only refresh token value</li>
+                    <li><code>TokenService</code> - are further explanation bellow</li>
                 </ul>
-
+                <p>Well, lets take a look by methods. <code>CreateToken</code> this method creates JWT token and add UserId to <code>Claims</code>. We can extract it from JWT (method: <code>GetUserIdFromExpiredToken</code>)
+                    for some reason like authorization or use it due to refreshing token stage. Next method <code>GenerateRefreshToken</code> uses for creating <code>JwtRefreshToken</code>
+                    Method <code>GetUserIdFromExpiredToken</code> this method we can split for two parts: first part - here we validate is token valid or not.
+                    This code pretty much the same as validation in Startup class except for expire date validation. If token valid we extract ClaimPrincipals than find UserId.
+                    <code>AddRefreshTokenAsync</code> and <code>GetRefreshTokenAsync</code> here we add and extract refresh token from storage.
+                </p>
+                <p>Add <code>AuthenticationManager</code> class. This class like a facade which combine <code>IUserService</code> and <code>ITokenService</code> and accountable for authentication</p>
+                <script src="https://gist.github.com/vbondaryuk/5cb33b03ac2844ec8fb8f32cd93b1a27.js"></script>
+                <p>You can see here when token refreshed <code>AuthenticationManager</code> extract UserId then validate is tuple of &#60;UserId, RefreshToken&#62; exists and refresh token is not expired
+                    <code>AuthenticationManager</code> generate new<code>JwtToken</code></p>
+                <p>Last but not least is <code>AuthenticationController</code></p>
+                <script src="https://gist.github.com/vbondaryuk/3eaf6526e6f814d6f5d8748dfcdecc0e.js"></script>
+                <p><code>AuthenticationController</code> does not catch any exceptions, does not response correct exception texts, but it is example project and it is only first part, in the future we will fix it.</p>
+                <p>Lets validate how does it work.</p>
+                <ul>
+                    <li>
+                        <h4>Authenticate</h4>
+                        <img src="img/authenticate.png" alt="Authenticate" width="1000">
+                    </li>
+                    <li>
+                        <h4>Refresh token</h4>
+                        <img src="img/refresh.png" alt="Refresh" width="1000">
+                    </li>
+                    <li>
+                        <h4>Register</h4>
+                        <img src="img/register.png" alt="Register" width="1000">
+                    </li>
+                </ul>
             </div>
-
+            <p>Excellent, we have finished authentication in back-end part.</p>
         </div>
     </div>
     <hr/>
