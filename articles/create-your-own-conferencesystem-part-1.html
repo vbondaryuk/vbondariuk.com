@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Create you own conference system. Part - 1</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="sidebar">
+    <a href="#articles">Articles</a>
+    <div class="sub-article">
+        <a  href="articles/create-your-own-conferencesystem-part-1.html">Create you own conference system</a>
+    </div>
+    <a href="../index.html">About</a>
+</div>
+<div class="content">
+    <div class="header container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-md-6 order-1 order-md-2 cv-image">
+                <img src="../img/vbondariuk.jpg" alt="Vladimir Bondariuk" height="140">
+            </div>
+            <div class="col-md-6 order-2 order-md-1">
+                <h2>Bondariuk Vladimir</h2>
+                <p>Software Engineer | C# developer</p>
+            </div>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Create your own conference system</h1>
+                <br/>
+                <p>The main goal of this article is to show how you can create you own conference system. This system will
+                    allow us to chat and Audio/Video calls.
+                </p>
+                <p> The source you can find here: <a href="https://github.com/vbondaryuk/ConferenceSystem">https://github.com/vbondaryuk/ConferenceSystem</a>
+                </p>
+                <p>
+                    For creating our system we will use follow technologies. Asp.Net Core 2.2 and Angular 7, for real-time
+                    communication we will use <a href="https://dotnet.microsoft.com/apps/aspnet/real-time">SignalR</a>,
+                    for supporting Audio/Video calls <a href="https://dotnet.microsoft.com/apps/aspnet/real-time">WebRTC</a>,
+                    for authentication between them JWT.
+                </p>
+                <p>
+                    Since article will have a lot piece of codes I decided to split it to following parts
+                </p>
+                <ul>
+                    <li><a href="#create-simple-chat">Creating simple chat via SignalR</a>
+                        <ul>
+                            <li><a href="#create-net-core-app">Create and configure Asp .Net Core Web application</a></li>
+                            <li><a href="#add-signalr-to-net-core-app">Add simple chat implementation</a></li>
+                            <li>Create Angular application</li>
+
+                            <li>Add JWT authentication</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Add possibilities to use calls via WebRTC;
+                    </li>
+                </ul>
+                So, lets go to implementation.
+                </p>
+                <hr/>
+                <br/>
+                <div id="create-simple-chat">
+                    <h2>Creating simple chat via SignalR</h2>
+                    <p> Simple demo how it will looks like</p>
+                    <video controls width="700px">
+                        <source src="video/chat_part-1.mp4" type="video/mp4">
+                    </video>
+                    <p>
+                        First of all we should think about project's folder structure. I will show you my view to it:
+                    </p>
+                    <div class="folder-structure">
+                        <ul>
+                            <li>ConferenceSystem
+                                <ul>
+                                    <li>src
+                                        <ul>
+                                            <li>ConferenceSystem.Api</li>
+                                            <li>ConferenceSystem-Angular</li>
+                                            <li>ConferenceSystem-React(it was not of this article, but who knows me be in
+                                                the future)
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>tests</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="create-net-core-app">
+                    <h3>Create and configure Asp .Net Core Web application</h3>
+                    <p>Lets start from creating .Net Core Web application. It is very easy just follow steps bellow.</p>
+                    <ul>
+                        <li>Open Visual Studio</li>
+                        <li>Create new project and call it ConferenceSystem.Api</li>
+                        <li>Web\Asp .net core web application</li>
+                        <li>Type the name of our system: ConferenceSystem.Api. Don't forget follow the structure I mentioned
+                            above
+                        </li>
+                        <li>Choose net core 2.2 and empty application, with No Authentication</li>
+                    </ul>
+                    <img src="img/NewAspCoreWebApp.png" alt="New Empty asp.net core web app" height="500">
+                    <p>After this steps empty application will be created by Visual Studio</p>
+                    <h6>.Net Core and JWT Authentication</h6>
+                    <p>For supporting JWT authentication in .Net Core, we should modify <code>Startup</code> class. But
+                        firstly we need to add configuration to <code>appsettings.json</code></p>
+                    <script src="https://gist.github.com/vbondaryuk/5d44b39ca24b3d40c6e0b5f25aebc8a8.js"></script>
+                    <p>Code explanation</p>
+                    <ul>
+                        <li><code>SecurityKey</code> - this key need to encrypt you JWT</li>
+                        <li><code>Issuer</code> - is the server that create the token</li>
+                        <li><code>Audience</code> - token receipt</li>
+                        <li>Last two fields it is an expiration time</li>
+                    </ul>
+                    <p>For simplifying to work with this setting lets add <code>JWTSettings</code> class.</p>
+                    <script src="https://gist.github.com/vbondaryuk/94be6d5c753ecfd3409ccbb6875d3910.js"></script>
+                    <p>Lets take a look <code>Startup</code> class and <code>ConfigureServices</code> method</p>
+                    <script src="https://gist.github.com/vbondaryuk/e0384e30c5bd6b4f57c39f62d4e6b975.js"></script>
+                    <p>Here you can see how we extract <code>JWT</code> configuration section and deserialize it to <code>JwtSettings</code>
+                        class.
+                        Then we add <code>Authentication</code> and <code>JwtBearer</code> services. In
+                        <code>JwtBearer</code> we configure <code>TokenValidationParameters</code>
+                        accordingly configuration from <code>appsettings.json</code> add <code>AuthenticationFailed</code>
+                        'interceptor' where we validate is exception <code>SecurityTokenExpiredException</code>
+                        then add Token-Expired header. Token-Expired header allow us to add possibilities to token refresh
+                        support.
+                        <br/>
+                        Since we will use external clients and clients will have other IP addresses we should configure
+                        <code>CORS</code> policy.
+                        From
+                        <a href="https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.2">MSDN</a>:
+                        Using CORS, a server can explicitly allow some cross-origin requests while rejecting others.
+                    </p>
+                    <p>For turn on our modification we should add <code>Authentication</code> and <code>CORS</code>
+                        middleware</p>
+                    <script src="https://gist.github.com/vbondaryuk/07665294ba449505266389f9282c4482.js"></script>
+                    <p>Excellent, we have configured our application for supporting JWT authentication, so lets dive more
+                        deeply and implement infrastructure for Authentication.</p>
+                    <h6>Add secure Api endpoint</h6>
+                    <p>I won't to use default <code>UserManager</code> for implementing authentication managing it is not
+                        interesting, more exciting to create it from scratch,
+                        probably it won't have all possibilities, but for our system, its more than enough.</p>
+                    <p>For working with authenticated user we add <code>User</code>class</p>
+                    <script src="https://gist.github.com/vbondaryuk/a6e858ed37ff1f424b60c0e633c93280.js"></script>
+                    <p>Then for handling users we need to add service <code>UserService</code> this service will responsible
+                        for creating users, validating password and etc.</p>
+                    <script src="https://gist.github.com/vbondaryuk/b776fb21d3ef5e9dbd7d188c490168fc.js"></script>
+                    <p>Code explanation</p>
+                    <p>In current step we won't to add data base support and will use List for keeping users. <code>CreateUserDto</code>
+                        just DTO for creating user.
+                        Pay attention to <code>CreateSalt</code> and <code>CreatePassword</code> methods.
+                        Us you can see every user has its own salt and we should not keep 'clean' password we should keep
+                        password's hash</p>
+                    <p>On the next step we need to add some classes and <code>TokenService</code> this service will
+                        accountable to create JWT tokens.
+                        Firstly take a look across the code and bellow you will find explanation</p>
+                    <script src="https://gist.github.com/vbondaryuk/37751b5fc0e95f299a02982a46b484e1.js"></script>
+                    <p>Code explanation</p>
+                    <ul>
+                        <li><code>JwtToken</code> - represents simple class for transferring to client</li>
+                        <li><code>JwtRefreshToken</code> - keeps some information for validating refresh token. This class
+                            will be kept inside DataBase/InMemoryDataBase,
+                            for client should be send only refresh token value
+                        </li>
+                        <li><code>TokenService</code> - are further explanation bellow</li>
+                    </ul>
+                    <p>Well, lets take a look by methods. <code>CreateToken</code> this method creates JWT token and add
+                        UserId to <code>Claims</code>.
+                        We can extract it from JWT (method: <code>GetUserIdFromExpiredToken</code>)
+                        for some reason like authorization or use it due to refreshing token stage. Next method <code>GenerateRefreshToken</code>
+                        uses for creating <code>JwtRefreshToken</code>
+                        Method <code>GetUserIdFromExpiredToken</code> this method we can split for two parts: first part -
+                        here we validate is token valid or not.
+                        This code pretty much the same as validation in Startup class except for expire date validation. If
+                        token valid we extract ClaimPrincipals than find UserId.
+                        <code>AddRefreshTokenAsync</code> and <code>GetRefreshTokenAsync</code> here we add and extract
+                        refresh token from storage.
+                    </p>
+                    <p>Add the <code>AuthenticationManager</code> class. This class accountable for authentication like a
+                        facade combines <code>IUserService</code> and <code>ITokenService</code></p>
+                    <script src="https://gist.github.com/vbondaryuk/5cb33b03ac2844ec8fb8f32cd93b1a27.js"></script>
+                    <p>You can see here when token refreshed <code>AuthenticationManager</code> extract UserId then validate
+                        is tuple of <code>&#60;UserId, RefreshToken&#62;</code>
+                        exists and refresh token is not expired <code>AuthenticationManager</code> generate new<code>JwtToken</code>.
+                        Other interesting method is <code>GetCurrentUser</code>.
+                        This method is used for retrieving user from request, for doing that we should add <code>IHttpContextAccessor</code>
+                        to constructor.
+                    </p>
+                    <p>One of the last we need to add the <code>AuthenticationController</code></p>
+                    <script src="https://gist.github.com/vbondaryuk/3eaf6526e6f814d6f5d8748dfcdecc0e.js"></script>
+                    <p><code>AuthenticationController</code> does not catch any exceptions, does not response correct
+                        exception texts, but it is example project and it is only first part,
+                        in the future we will fix it.</p>
+                    <p>
+                        Last but not least we need to add our dependencies to DI container in <code>Startup</code>.
+                        in the ent of <code>configureService</code> add the following rows:<br/>
+                        <code>services.AddScoped&#60;IAuthenticationManager, AuthenticationManager&#62;();<br/>
+                            services.AddScoped&#60;ITokenService, TokenService&#62;();<br/>
+                            services.AddScoped&#60;IUserService, UserService&#62;();<br/>
+                            services.AddHttpContextAccessor();<br/>
+                        </code>
+                    </p>
+                    <p>Lets validate how does it work.</p>
+                    <ul>
+                        <li>
+                            <h4>Authenticate</h4>
+                            <img src="img/authenticate.png" alt="Authenticate" width="1000">
+                        </li>
+                        <li>
+                            <h4>Refresh token</h4>
+                            <img src="img/refresh.png" alt="Refresh" width="1000">
+                        </li>
+                        <li>
+                            <h4>Register</h4>
+                            <img src="img/register.png" alt="Register" width="1000">
+                        </li>
+                    </ul>
+                </div>
+                <p>Excellent, we have finished with authentication. So we can add <code>SignalR</code> support</p>
+                <div id="add-signalr-to-net-core-app">
+                    <h4>Add simple chat implementation</h4>
+                    <p>Firstly we need to create class which will be inherited from <code>Hub</code></p>
+                    <script src="https://gist.github.com/vbondaryuk/4fb3987a9a0e9c79e80d1f4d2c6ba2fd.js"></script>
+                    <p>Code explanation</p>
+                    <ul>
+                        <li><code>[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]</code> - here we specified access only for authorized users.
+                        <li><code>ConnectedClients</code> - dictionary where we will keep all connected users, it can be replaced for DataBase for example.
+                            This dictionary contains connection ids via user since one user can cbe connected with different devices.</li>
+                        <li><code>SendMessage</code> - this method are responsible for communication between clients, will will call this method for send message to recipients.</li>
+                        <li><code>RequestConnectedClients</code> - this method response to caller only, and return all connected users.</li>
+                        <li><code>OnConnectedAsync</code> - this standard method is fired when someone connected to the conference hub. When someone connected to we pup this connection id to the dictionary.
+                            Then call <code>OnConnectedUser</code> method for all connected users for notified that the user is online</li>
+                        <li><code>OnDisconnectedAsync</code> - the same as above but fired when user lose connection.</li>
+                    </ul>
+                    <p>For allowing this hub works we should add some changes to <code>Startup</code> class</p>
+                    <p>In <code>JwtBearerEvents</code> we should add following rows</p>
+                    <script src="https://gist.github.com/vbondaryuk/babce444fbc9b3a383bbc250782910d9.js"></script>
+                    <p>This code validate is connection to the hub and then retrieve token(which should be sent as parameter) and set this token to context.</p>
+                    <p>Last few thinks, add <code>services.AddSignalR();</code> to service collection and add
+                        <code>app.UseSignalR(routes =&#62; { routes.MapHub&#60;ConferenceHub&#62;("/conference"); })</code> to execution middleware.
+                    </p>
+                    <p>In the end we will add <code>UserController</code> for retrieve user information.</p>
+                    <script src="https://gist.github.com/vbondaryuk/e6f93ac7786dacd5960dd1b64538d98c.js"></script>
+                    <h5>That's it, we have finished first part where we have implements back-end part for our future conference system.</h5>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-body{
+.header{
     padding: 1em;
 }
 
@@ -18,8 +18,7 @@ body{
 
 .folder-structure ul, 
 .folder-structure li{
-    list-style: none;
-    
+    list-style: none;    
   }
 
 /* .folder-structure ul:before,  */
@@ -42,4 +41,58 @@ code{
     font-size: 17px;
     background-color: rgb(240, 240, 240);
     padding: 2px 7px;
+}
+
+.sidebar {
+    font-size: 17px;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.sub-article{
+    padding-left: 20px;
+}
+
+.sidebar a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.sidebar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+.content{
+    margin-left: 300px;
+    padding: 1px 16px;
+}
+
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .sidebar a {float: left;}
+    div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
 }
