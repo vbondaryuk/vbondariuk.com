@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Create you own conference system. Part - 1">
+    <meta name="author" content="Vladimir Bondariuk">
 
     <title>Create you own conference system. Part - 1</title>
 
@@ -16,7 +16,18 @@
 </head>
 
 <body>
-<div class="sidebar">
+<div class="sidebar sidebar-left">
+    <img src="../img/vbondariuk.jpg" alt="Vladimir Bondariuk" height="140">
+    <h2>Bondariuk Vladimir</h2>
+    <p>Software Engineer | C# developer</p>
+    <div>
+        <a href="https://github.com/vbondaryuk" target="_blank"><img src="../img/GitHub.png" alt="GitHub profile" height="32"></a>
+        <a href="https://www.linkedin.com/in/vbondaryuk/?locale=en_US" target="_blank"><img src="../img/linkedin.png" alt="Linkedin profile" height="32"></a>
+        <a href="../data/Vladimir%20Bondariuk.pdf" target="_blank" download><img src="../img/cv.png" alt="Curriculum vitae" height="32"></a>
+    </div>
+</div>
+
+<div class="sidebar sidebar-right">
     <a href="#articles">Articles</a>
     <div class="sub-article">
         <a  href="#">Create you own conference system</a>
@@ -24,19 +35,6 @@
     <a href="../index.html">About</a>
 </div>
 <div class="content">
-    <div class="header container h-100">
-        <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-md-6 order-1 order-md-2 cv-image">
-                <img src="../img/vbondariuk.jpg" alt="Vladimir Bondariuk" height="140">
-            </div>
-            <div class="col-md-6 order-2 order-md-1">
-                <h2>Bondariuk Vladimir</h2>
-                <p>Software Engineer | C# developer</p>
-            </div>
-        </div>
-        <hr/>
-    </div>
-
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -162,9 +160,9 @@
                     <script src="https://gist.github.com/vbondaryuk/b776fb21d3ef5e9dbd7d188c490168fc.js"></script>
                     <p>Code explanation</p>
                     <p>In current step we won't to add data base support and will use List for keeping users. <code>CreateUserDto</code>
-                        just DTO for creating user.
+                        just DTO for creating a user.
                         Pay attention to <code>CreateSalt</code> and <code>CreatePassword</code> methods.
-                        Us you can see every user has its own salt and we should not keep 'clean' password we should keep
+                        As you can see every user has its own salt and we should not keep 'clean' password we should keep
                         password's hash</p>
                     <p>On the next step we need to add some classes and <code>TokenService</code> this service will
                         accountable to create JWT tokens.
@@ -204,8 +202,8 @@
                     <p>One of the last we need to add the <code>AuthenticationController</code></p>
                     <script src="https://gist.github.com/vbondaryuk/3eaf6526e6f814d6f5d8748dfcdecc0e.js"></script>
                     <p><code>AuthenticationController</code> does not catch any exceptions, does not response correct
-                        exception texts, but it is example project and it is only first part,
-                        in the future we will fix it.</p>
+                        exception texts, but it is example project and it is the only first part,
+                        in the future, we will fix it.</p>
                     <p>
                         Last but not least we need to add our dependencies to DI container in <code>Startup</code>.
                         in the ent of <code>configureService</code> add the following rows:<br/>

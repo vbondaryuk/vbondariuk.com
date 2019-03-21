@@ -46,52 +46,75 @@ code{
 .sidebar {
     font-size: 17px;
     margin: 0;
-    padding: 0;
     width: 300px;
     background-color: #f1f1f1;
     position: fixed;
     height: 100%;
     overflow: auto;
+    padding: 2em 0 0;
 }
 
-.sidebar a {
+.sidebar-right{
+    right: 0;
+}
+
+.sidebar-right a {
     display: block;
     color: black;
     padding: 16px;
     text-decoration: none;
+}
+.sidebar-left{
+    text-align: center;
 }
 
 .sub-article{
     padding-left: 20px;
 }
 
-.sidebar a.active {
+.sidebar-right a.active {
     background-color: #4CAF50;
     color: white;
 }
 
-.sidebar a:hover:not(.active) {
+.sidebar-right a:hover:not(.active) {
     background-color: #555;
     color: white;
 }
 
 .content{
-    margin-left: 300px;
+    margin: 0px 300px;
     padding: 1px 16px;
 }
+.container{
+    margin-top: 10em
 
-@media screen and (max-width: 700px) {
+}
+
+@media screen and (max-width: 1600px) {
+    .sidebar {
+        font-size: 14px;
+        width: 200px;
+    }
+
+    .content{
+        margin: 0px 200px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
+        font-size: 17px;
     }
-    .sidebar a {float: left;}
+    .sidebar-right a {float: left;}
     div.content {margin-left: 0;}
 }
 
 @media screen and (max-width: 400px) {
-    .sidebar a {
+    .sidebar-right a {
         text-align: center;
         float: none;
     }
