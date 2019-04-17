@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Create your own conference system. Part - 2">
+    <meta name="author" content="Vladimir Bondariuk">
 
-    <title>Create you own conference system. Part - 1</title>
+    <title>Create you own conference system. Part - 2</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -16,174 +16,172 @@
 </head>
 
 <body>
-<div class="header container h-100">
-    <div class="row h-100 justify-content-center align-items-center">
-        <div class="col-md-6 order-1 order-md-2 cv-image">
-            <img src="../img/vbondariuk.jpg" alt="Vladimir Bondariuk" height="140">
-        </div>
-        <div class="col-md-6 order-2 order-md-1">
-            <h2>Bondariuk Vladimir</h2>
-            <p>Software Engineer | C# developer</p>
-        </div>
+<div class="sidebar sidebar-left">
+    <img src="../img/vbondariuk.jpg" alt="Vladimir Bondariuk" height="140">
+    <h2>Bondariuk Vladimir</h2>
+    <p>Software Engineer | C# developer</p>
+    <div>
+        <a href="https://github.com/vbondaryuk" target="_blank"><img src="../img/GitHub.png" alt="GitHub profile" height="32"></a>
+        <a href="https://www.linkedin.com/in/vbondaryuk/?locale=en_US" target="_blank"><img src="../img/linkedin.png" alt="Linkedin profile" height="32"></a>
+        <a href="../data/Vladimir%20Bondariuk.pdf" target="_blank" download><img src="../img/cv.png" alt="Curriculum vitae" height="32"></a>
     </div>
-    <hr/>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Create your own conference system</h1>
-            <br/>
-            <p>The main goal of this article is to show how you can create you own conference system. This system will
-                allow us to chat and Audio/Video calls.
-            </p>
-            <p> The source you can find here: <a href="https://github.com/vbondaryuk/ConferenceSystem">https://github.com/vbondaryuk/ConferenceSystem</a>
-            </p>
-            <p>
-                For creating our system we will use follow technologies. Asp.Net Core 2.2 and Angular 7, for real-time
-                communication we will use <a href="https://dotnet.microsoft.com/apps/aspnet/real-time">SignalR</a>,
-                for supporting Audio/Video calls <a href="https://dotnet.microsoft.com/apps/aspnet/real-time">WebRTC</a>,
-                for authentication between them JWT.
-            </p>
-            <p>
-                Since article will have a lot piece of codes I decided to split it to following parts
-            </p>
-            <ul>
-                <li><a href="#create-simple-chat">Creating simple chat via SignalR</a>
-                    <ul>
-                        <li><a href="#create-net-core-app">Create and configure Asp .Net Core Web application</a></li>
-                        <li>Create Angular application</li>
-                        <li>Add chat simple implementation</li>
-                        <li>Add JWT authentication</li>
-                    </ul>
-                </li>
-                <li>
-                    Add possibilities to use calls via WebRTC;
-                </li>
-            </ul>
-            So, lets go to implementation.
-            </p>
-            <hr/>
-            <br/>
-            <div id="create-simple-chat">
-                <h2>Creating simple chat via SignalR</h2>
-                <p>
-                    First of all we should think about project's folder structure. I will show you my view to it:
-                </p>
-                <div class="folder-structure">
-                    <ul>
-                        <li>ConferenceSystem
-                            <ul>
-                                <li>src
-                                    <ul>
-                                        <li>ConferenceSystem.Api</li>
-                                        <li>ConferenceSystem-Angular</li>
-                                        <li>ConferenceSystem-React(it was not of this article, but who knows me be in
-                                            the future)
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>tests</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div id="create-net-core-app">
-                <h3>Create and configure Asp .Net Core Web application</h3>
-                <p>Lets start from creating .Net Core Web application. It is very easy just follow steps bellow.</p>
-                <ul>
-                    <li>Open Visual Studio</li>
-                    <li>Create new project and call it ConferenceSystem.Api</li>
-                    <li>Web\Asp .net core web application</li>
-                    <li>Type the name of our system: ConferenceSystem.Api. Don't forget follow the structure I mentioned
-                        above
-                    </li>
-                    <li>Choose net core 2.2 and empty application, with No Authentication</li>
-                </ul>
-                <img src="img/NewAspCoreWebApp.png" alt="New Empty asp.net core web app" height="500">
-                <p>After this steps empty application will be created by Visual Studio</p>
-                <h6>.Net Core and JWT Authentication</h6>
-                <p>For supporting JWT authentication in .Net Core, we should modify <code>Startup</code> class. But
-                    firstly we need to add configuration to <code>appsettings.json</code></p>
-                <script src="https://gist.github.com/vbondaryuk/5d44b39ca24b3d40c6e0b5f25aebc8a8.js"></script>
-                <p>Code explanation</p>
-                <ul>
-                    <li><code>SecurityKey</code> - this key need to encrypt you JWT</li>
-                    <li><code>Issuer</code> - is the server that create the token</li>
-                    <li><code>Audience</code> - token receipt</li>
-                    <li>Last two fields it is an expiration time</li>
-                </ul>
-                <p>For simplifying to work with this setting lets add <code>JWTSettings</code> class.</p>
-                <script src="https://gist.github.com/vbondaryuk/94be6d5c753ecfd3409ccbb6875d3910.js"></script>
-                <p>Lets take a look <code>Startup</code> class and <code>ConfigureServices</code> method</p>
-                <script src="https://gist.github.com/vbondaryuk/e0384e30c5bd6b4f57c39f62d4e6b975.js"></script>
-                <p>Here you can see how we extract <code>JWT</code> configuration section and deserialize it to <code>JwtSettings</code> class.
-                    Then we add <code>Authentication</code> and <code>JwtBearer</code> services. In <code>JwtBearer</code> we configure <code>TokenValidationParameters</code>
-                    accordingly configuration from <code>appsettings.json</code> add <code>AuthenticationFailed</code> 'interceptor' where we validate is exception <code>SecurityTokenExpiredException</code>
-                    then add Token-Expired header. Token-Expired header allow us to add possibilities to token refresh support.
-                    <br/>
-                    Since we will use external clients and clients will have other IP addresses we should configure <code>CROS</code> policy.
-                    From <a href="https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.2">MSDN</a>:
-                    Using CORS, a server can explicitly allow some cross-origin requests while rejecting others.
-                </p>
-                <p>For turn on our modification we should add <code>Authentication</code> and <code>CORS</code> middleware</p>
-                <script src="https://gist.github.com/vbondaryuk/07665294ba449505266389f9282c4482.js"></script>
-                <p>Excellent, we have configured our application for supporting JWT authentication, so lets dive more deeply and implement infrastructure for Authentication.</p>
-                <h6>Add secure Api endpoint</h6>
-                <p>I won't to use default <code>UserManager</code> for implementing authentication managing it is not interesting, more exciting to create it from scratch,
-                    probably it won't have all possibilities, but for our system, its more than enough.</p>
-                <p>For working with authenticated user we add <code>User</code>class</p>
-                <script src="https://gist.github.com/vbondaryuk/a6e858ed37ff1f424b60c0e633c93280.js"></script>
-                <p>Then for handling users we need to add service <code>UserService</code> this service will responsible for creating users, validating password and etc.</p>
-                <script src="https://gist.github.com/vbondaryuk/b776fb21d3ef5e9dbd7d188c490168fc.js"></script>
-                <p>Code explanation</p>
-                <p>In current step we won't to add data base support and will use List for keeping users. <code>CreateUserDto</code> just DTO for creating user.
-                    Pay attention to <code>CreateSalt</code> and <code>CreatePassword</code> methods.
-                Us you can see every user has its own salt and we should not keep 'clean' password we should keep password's hash</p>
-                <p>On the next step we need to add some classes and <code>TokenService</code> this service will accountable to create JWT tokens.
-                    Firstly take a look across the code and bellow you will find explanation</p>
-                <script src="https://gist.github.com/vbondaryuk/37751b5fc0e95f299a02982a46b484e1.js"></script>
-                <p>Code explanation</p>
-                <ul>
-                    <li><code>JwtToken</code> - represents simple class for transferring to client</li>
-                    <li><code>JwtRefreshToken</code> - keeps some information for validating refresh token. This class will be kept inside DataBase/InMemoryDataBase,
-                        for client should be send only refresh token value</li>
-                    <li><code>TokenService</code> - are further explanation bellow</li>
-                </ul>
-                <p>Well, lets take a look by methods. <code>CreateToken</code> this method creates JWT token and add UserId to <code>Claims</code>. We can extract it from JWT (method: <code>GetUserIdFromExpiredToken</code>)
-                    for some reason like authorization or use it due to refreshing token stage. Next method <code>GenerateRefreshToken</code> uses for creating <code>JwtRefreshToken</code>
-                    Method <code>GetUserIdFromExpiredToken</code> this method we can split for two parts: first part - here we validate is token valid or not.
-                    This code pretty much the same as validation in Startup class except for expire date validation. If token valid we extract ClaimPrincipals than find UserId.
-                    <code>AddRefreshTokenAsync</code> and <code>GetRefreshTokenAsync</code> here we add and extract refresh token from storage.
-                </p>
-                <p>Add <code>AuthenticationManager</code> class. This class like a facade which combine <code>IUserService</code> and <code>ITokenService</code> and accountable for authentication</p>
-                <script src="https://gist.github.com/vbondaryuk/5cb33b03ac2844ec8fb8f32cd93b1a27.js"></script>
-                <p>You can see here when token refreshed <code>AuthenticationManager</code> extract UserId then validate is tuple of &#60;UserId, RefreshToken&#62; exists and refresh token is not expired
-                    <code>AuthenticationManager</code> generate new<code>JwtToken</code></p>
-                <p>Last but not least is <code>AuthenticationController</code></p>
-                <script src="https://gist.github.com/vbondaryuk/3eaf6526e6f814d6f5d8748dfcdecc0e.js"></script>
-                <p><code>AuthenticationController</code> does not catch any exceptions, does not response correct exception texts, but it is example project and it is only first part, in the future we will fix it.</p>
-                <p>Lets validate how does it work.</p>
-                <ul>
-                    <li>
-                        <h4>Authenticate</h4>
-                        <img src="img/authenticate.png" alt="Authenticate" width="1000">
-                    </li>
-                    <li>
-                        <h4>Refresh token</h4>
-                        <img src="img/refresh.png" alt="Refresh" width="1000">
-                    </li>
-                    <li>
-                        <h4>Register</h4>
-                        <img src="img/register.png" alt="Register" width="1000">
-                    </li>
-                </ul>
-            </div>
-            <p>Excellent, we have finished authentication in back-end part.</p>
-        </div>
+<div class="sidebar sidebar-right">
+    <a href="#articles">Articles</a>
+    <div class="sub-article">
+        <a  href="create-your-own-conferencesystem-part-1.html">Create your own conference system. Part - 1</a>
+        <a  href="#">Create your own conference system. Part - 2</a>
     </div>
-    <hr/>
+    <a href="../index.html">About</a>
 </div>
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Create your own conference system. Part - 2</h1>
+                <br/>
+                <p>In the second part of our article we will create angular application for our conference system.
+                </p>
+                <p>The source you can find here: <a href="https://github.com/vbondaryuk/ConferenceSystem">https://github.com/vbondaryuk/ConferenceSystem</a></p>
+                <p>We will use <a href="https://cli.angular.io/">Angular CLI</a> for easiest creating an application also it can help us to create services/modules/etc.</p>
+
+                <h3>Setup requirements</h3>
+                <p>There are come requirements for angular application</p>
+                <p>Please download and install following:
+                <ul>
+                    <li><a href="https://nodejs.org/en/download/">NodeJs and NPM</a></li>
+                    <li><a href="https://cli.angular.io/">Angular CLI</a></li>
+                </ul>
+
+
+                <h3>Creating Angular application</h3>
+                <p>After installing node and angular CLI we have all required instruments to create app.</p>
+                <p>Run this command in terminal <code>ng new conference-system-app</code>.
+                    Due to executing it should ask you some question about which stylesheet would you like and would you use Angular routing.
+                    Lets choose <b>scss</b> and <b>Yes</b> for routing.
+                </p>
+                <p>After previous steps you will see an empty application with following structure</p>
+                <img src="img/empty project.png" alt="Empty project" width="200">
+                <p>One minor point I will use <code>bootstrap</code> in some cases so lets add it <code>npm install bootstrap</code></p>
+                <p>After installing <code>@import '~bootstrap/scss/bootstrap.scss';</code> to <code>style.scss</code></p>
+                <p>We can check have our application been creating correctly via <code>ng serve</code> this command run our application on default port.
+                    It should be <a href="http://localhost:4200">http://localhost:4200</a>
+                </p>
+                <p>Perfect! Our application works, now let's go to chat implementation</p>
+
+                <h3>Chat Implementation</h3>
+                <p>Our chat implementation in the current stage will have following possibilities:</p>
+                <ul>
+                    <li>Login</li>
+                    <li>Register</li>
+                    <li>Send messages</li>
+                    <li>Receive messages</li>
+                </ul>
+                <p>Lets start from registration</p>
+                <p>For handling users lets create some models</p>
+                <ul>
+                    <li><code>ng g interface shared/models/user.login</code> - used for sign in</li>
+                    <li><code>ng g interface shared/models/user.registration</code> - used for registration</li>
+                    <li><code>ng g interface shared/models/user</code> - information for logged in user</li>
+                </ul>
+                <p>After this commands you can find new folders shared and models inside of it</p>
+                <p></p>
+                <script src="https://gist.github.com/vbondaryuk/4ba562b8747dc8452c1a672dbbe9ef21.js"></script>
+                <script src="https://gist.github.com/vbondaryuk/b80d71635352360e3c14eb9af2baca09.js"></script>
+                <script src="https://gist.github.com/vbondaryuk/a1ad030af66c203b674784e84e3dd80f.js"></script>
+                <p>Change you models accordingly gists above.</p>
+                <p>After creating user models we need to create services for retrieving user information from back-end part we create in the previous article.
+                    For doing this we can add path to our system in environments. Go to <code>environments/environments.ts</code> and add path: <code>apiUri: 'http://localhost:4201'</code>
+                </p>
+                <h5>authentication.service.</h5>
+                <p>Lets create authentication.service. <code>ng g service shared/services/authentication</code></p>
+                <script src="https://gist.github.com/vbondaryuk/1aa74364565179fec4b39a95c19c7671.js"></script>
+                <p>Every method in service above has behaviour accordingly the name of it. This service accountable for authentication.
+                    Take a look method <code>authResponseMap</code> after registration or sign in we retrieve jwt_token and jwt_refreshToken and save it in the localStorage.
+                    After logout this tokens deleted from it.</p>
+                <p>Due to initialization this service we retrieve information from local storage about jwt_token.</p>
+                <p>So if token valid we should have an possibilities to <b>skip authentication steps</b>. Lets take a look how we can do it.</p>
+                <p>How can we do it?</p>
+                <p>Angular can help us with it. It has <code>HttpInterceptor</code>. Interceptors allow us to intercept http request/response and handle them</p>
+
+                <h5>JwtInterceptor</h5>
+                <p>The JwtInterceptor intercept the http request from application and add the JWT token for every of them if user logged in.</p>
+                <p>Run <code>ng g class interceptors/jwt.interceptor</code></p>
+                <script src="https://gist.github.com/vbondaryuk/f1f521b04130cb631d296f02afe88474.js"></script>
+                <p>You can see we validate if user logged in, add token, unless call next http handler</p>
+
+                <h5>HttpErrorInterceptor</h5>
+                <p>While we are working with interceptors lets add http error interceptor. There we will validate if exception status is 401 then call logout method for cleanup local storage</p>
+                <p>Run <code>ng g class interceptors/http-error.interceptor</code></p>
+                <script src="https://gist.github.com/vbondaryuk/bffc04f01f8cf99013cdc86f446fbddf.js"></script>
+                <p>After creating interceptor we should add its to providers section in <code>app.module.ts</code></p>
+                <script src="https://gist.github.com/vbondaryuk/24f53203cf2975a96ee722ed49d764dd.js"></script>
+
+                <h5>Login module</h5>
+                <p>Login module will accountable to sign in/register users</p>
+                <p>Lets create login module and two Components inside of it.</p>
+                <ul>
+                    <li><code>ng g module modules/login</code> - create login module</li>
+                    <li><code>ng g component modules/login/components/login</code> - component for sign in</li>
+                    <li><code>ng g component modules/login/components/register</code> - component for registration</li>
+                </ul>
+                <p>So module and components were created. We need to add routing for switching between pages Login/Register.</p>
+                <p><code>ng g class modules/login/login-routing.module</code></p>
+                <script src="https://gist.github.com/vbondaryuk/c0912451f109e65b66955d4f364b768c.js"></script>
+                <p>For turn on this routing it should be added to login.module.ts to import section</p>
+                <p>Lets take a look<code>login.component</code></p>
+                <script src="https://gist.github.com/vbondaryuk/8cf2b7b056a8c9b40bca13e305aa6045.js"></script>
+                <script src="https://gist.github.com/vbondaryuk/e121ff0e9c5ed39b51c7179dd0c9310a.js"></script>
+                <p><a href="https://github.com/vbondaryuk/ConferenceSystem/blob/dev/src/Web/ConferenceSystem-Angular/src/app/modules/login/components/login/login.component.scss"><code>login.component.scss</code> you can find here</a></p>
+                <p>The code here is not so difficult. When the component initialized we put url to variable, since we can be moved from other page as we does not registered yet.
+                    After correct registration we will redirected to needed page. In <code>login.components.html</code> you can see some validation for an email and password</p>
+                <p>For support <code>[(ngModel)]</code> we should add <code>FormsModule</code> into imports section in login.module.ts. If you will use reactive extensions you should add <code>ReactiveFormsModule</code></p>
+                <img src="img/login.module.ts.png" alt="login.module.ts" width="500">
+
+                <p>Next component in login module is <code>register</code> component</p>
+                <script src="https://gist.github.com/vbondaryuk/e3670836881b6bdcdb95ade1d4b7f693.js"></script>
+                <script src="https://gist.github.com/vbondaryuk/82cbec45a74a029efee2794645d700b1.js"></script>
+                <p><a href="https://github.com/vbondaryuk/ConferenceSystem/blob/dev/src/Web/ConferenceSystem-Angular/src/app/modules/login/components/register/register.component.scss"><code>register.component.scss</code> you can find here</a></p>
+                <p>Both of this components Login and Register pretty same.</p>
+
+                <h5>Dashboard module</h5>
+                <p>This module will accountable for toolbar. In toolbar we will see detailed information for user and logout button</p>
+                <ul>
+                    <li><code>ng g module modules/dashboard</code> - create dashboard module</li>
+                    <li><code>ng g component modules/dashboard/components/dashboard</code> - component for toolbar</li>
+                    <li><code>ng g class modules/dashboard/dashboard-routing.module</code> - routing configuration</li>
+                </ul>
+                <p>Lets take a look:</p>
+                <script src="https://gist.github.com/vbondaryuk/4f365474b52f9d780b9ec21d3cd15c85.js"></script>
+                <script src="https://gist.github.com/vbondaryuk/6d5bbf9809ec9bafafc9ff94cd669d9a.js"></script>
+                <p>For retrieving user information we need to create new service</p>
+                <p><code>ng g service shared/services/user</code></p>
+                <script src="https://gist.github.com/vbondaryuk/b99a7fa9254414c42b176e48ee3d1c0d.js"></script>
+                <p>Then we should configure routing for our module</p>
+                <script src="https://gist.github.com/vbondaryuk/cc89d950af7529164890066b40021e87.js"></script>
+                <p>Now we need ro register this routing in <code>dashboard.module.ts</code> just add <code>DashboardRoutingModule</code> to imports</p>
+
+                <h5>AuthGuard</h5>
+                <p>Due to working on our application we need to think how can we prevent unauthenticated access to some of our components
+                    Dashboard for example. We can do this by implementing <code><a href="https://angular.io/api/router/CanActivate">CanActivate</a></code>
+                    Angular interface which can help us decide is routing can be activated or not. Lets add implementation of this interface:
+                </p>
+                <p><code>ng g guard guards/app</code> than chose canActivate</p>
+                <script src="https://gist.github.com/vbondaryuk/6f102c3cd0de4bd6154853062d760346.js"></script>
+                <p>Firstly we validate is user logged in if yse return true, unless redirect to login page and throw correct url path(after login we will correctly redirected to needed page)</p>
+                <p>Open <code>app-routing.modules.ts</code> and configure routing. Hide Dashboard routing via AthGuard</p>
+                <script src="https://gist.github.com/vbondaryuk/75ec837f5e54eaa35c5469cbf64d8d8f.js"></script>
+                <p>Now clean <code>app.component.html</code> and add only one row <code>&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></p>
+                <p>Excellent. Now we can run <code>ng serve</code> and take a look. We should have login page and dashboard.</p>
+
+                <h5>Chat module</h5>
+
+            </div>
+        </div>
+        <hr/>
+    </div>
+</div>
+
 </body>
 </html>
