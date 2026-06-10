@@ -11,20 +11,21 @@
   <meta property="og:url" content="{{ site.url }}{{ page.url }}">
   <title>{{ page.title | default: site.title }}</title>
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
-    <div>
+    <div class="identity">
       <p class="eyebrow">Curriculum Vitae</p>
       <h1>{{ site.title }}</h1>
       <p class="subtitle">Principal Software Engineer</p>
     </div>
-    <nav aria-label="Profile links">
-      <a class="button" href="https://www.linkedin.com/in/vbondaryuk/" rel="me">LinkedIn</a>
-      <a class="button button-secondary" href="{{ '/assets/Vladimir-Bondariuk-CV.pdf' | relative_url }}" download>Download PDF</a>
+    <nav class="actions" aria-label="Profile actions">
+      <a class="button" href="{{ '/assets/Vladimir-Bondariuk-CV.pdf' | relative_url }}" download>Download PDF</a>
       <button class="button button-secondary" type="button" onclick="window.print()">Print / Save as PDF</button>
+      <a class="button button-link" href="https://www.linkedin.com/in/vbondaryuk/" rel="me">LinkedIn</a>
     </nav>
   </header>
 
