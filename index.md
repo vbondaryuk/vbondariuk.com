@@ -69,7 +69,6 @@ Principal Software Engineer with 12+ years building real-time, large-scale distr
 - **Foundational engineering:** Gained experience in enterprise software development, networking, and system administration.
 - **Process automation:** Implemented electronic document-management systems, OCR integration, and electronic signature services to automate manual business processes.
 
-## Education & Certifications
+## Education
 
-- **Master of Science in Software Engineering** - Kyrgyz State Technical University, 2006-2012.
-- **Certifications:** Microservices: Asynchronous Messaging & Design Patterns; Developing Azure Compute Solutions.
+- **Master of Science in Software Engineering** - [Kyrgyz State Technical University](https://kstu.kg/en/), 2006-2012.
