@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ page.description | default: site.description | escape }}">
+  <meta name="author" content="{{ site.author | escape }}">
+  <meta property="og:title" content="{{ page.title | default: site.title | escape }}">
+  <meta property="og:description" content="{{ page.description | default: site.description | escape }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+  <title>{{ page.title | default: site.title }}</title>
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">Curriculum Vitae</p>
+      <h1>{{ site.title }}</h1>
+      <p class="subtitle">Principal Software Engineer</p>
+    </div>
+    <nav aria-label="Profile links">
+      <a class="button" href="https://www.linkedin.com/in/vbondaryuk/" rel="me">LinkedIn</a>
+      <a class="button button-secondary" href="{{ '/assets/Vladimir-Bondariuk-CV.pdf' | relative_url }}" download>Download PDF</a>
+      <button class="button button-secondary" type="button" onclick="window.print()">Print / Save as PDF</button>
+    </nav>
+  </header>
+
+  <main id="content" class="resume">
+    {{ content }}
+  </main>
+
+  <footer class="site-footer">
+    <p>Updated from the latest CV. Public contact: <a href="https://www.linkedin.com/in/vbondaryuk/" rel="me">linkedin.com/in/vbondaryuk</a>.</p>
+  </footer>
+</body>
+</html>

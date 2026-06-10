@@ -1,0 +1,9 @@
+title: Vladimir Bondariuk
+description: Principal Software Engineer specializing in distributed systems, Azure, .NET, and AI-enabled developer productivity.
+url: "https://vbondariuk.com"
+author: Vladimir Bondariuk
+markdown: kramdown
+permalink: pretty
+
+exclude:
+  - README.md
